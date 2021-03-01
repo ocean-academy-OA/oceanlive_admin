@@ -429,8 +429,7 @@ class _MentorDesignState extends State<MentorDesign> {
           children: [
             Container(
               margin: EdgeInsets.all(50.0),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
               height: 320.0,
               width: 265.0,
               decoration: BoxDecoration(
@@ -740,16 +739,18 @@ class _AlertMentorState extends State<AlertMentor> {
             children: [
               SizedBox(width: 50),
               Expanded(
-                  child: TextField(
-                controller: linkedinLink,
-                decoration: customDecor(),
-              )),
+                child: TextField(
+                  controller: linkedinLink,
+                  decoration: customDecor(),
+                ),
+              ),
               SizedBox(width: 10),
               Expanded(
-                  child: TextField(
-                controller: twitter,
-                decoration: customDecor(),
-              )),
+                child: TextField(
+                  controller: twitter,
+                  decoration: customDecor(),
+                ),
+              ),
               SizedBox(width: 50),
             ],
           ),

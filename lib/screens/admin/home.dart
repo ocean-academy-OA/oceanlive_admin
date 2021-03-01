@@ -12,6 +12,7 @@ import 'package:ocean_live/screens/admin/mentor.dart';
 import 'package:ocean_live/screens/admin/notification.dart';
 import 'package:ocean_live/screens/admin/upcoming_batch.dart';
 import 'package:ocean_live/screens/admin/video.dart';
+import 'package:ocean_live/screens/admin/webinar.dart';
 import 'package:ocean_live/widgets/admin/appbar_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +27,6 @@ class _AdminState extends State<Admin> {
   static Map menuColor = {
     "Courses": true,
     "Payment Details": false,
-    "Payment Details": false,
     "Staff Details": false,
     "Student Details": false,
     "Upcoming Batches": false,
@@ -36,6 +36,7 @@ class _AdminState extends State<Admin> {
     "Video": false,
     "Mentor": false,
     "Certificate": false,
+    "Webinar": false,
   };
 
   Widget contentWidget = Details(text: "staff");
@@ -102,6 +103,10 @@ class _AdminState extends State<Admin> {
                     text: "Certificate",
                     iconData: FontAwesomeIcons.certificate,
                     widget: Certificate()),
+                menuItem(
+                    text: "Webinar",
+                    iconData: FontAwesomeIcons.tv,
+                    widget: Webinar()),
               ],
             ),
           ),
