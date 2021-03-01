@@ -34,7 +34,10 @@ dependencies:
   firebase_core: "^0.5.3"
   cloud_firestore: "^0.14.4"
   file_picker: ^2.1.5+1
+  pdf: ^2.1.0
+  universal_html: ^1.2.4
   url_launcher: ^5.7.10
+  date_format: ^1.0.9
 #  flutter_web_image_picker: ^0.0.2
 
   firebase_storage : ^5.0.0

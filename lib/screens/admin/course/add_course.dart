@@ -32,13 +32,17 @@ class AddCourse extends StatefulWidget {
 
 class _AddCourseState extends State<AddCourse> {
   String getLink;
+  var pdfLink;
 
   Map checkbox = {"online": true, "offline": false};
   bool isVisible = true;
   bool isRuppe = false;
   bool isTrainer = false;
   String des = "";
-  bool isComplete = false, isOnline = false, isOffline = false;
+  bool isComplete = false,
+      isOnline = false,
+      isOffline = false,
+      isFinish = false;
   Image image;
   Map chapter = {};
   List section = [];
@@ -53,6 +57,8 @@ class _AddCourseState extends State<AddCourse> {
   TextEditingController desc = TextEditingController();
   TextEditingController duration = TextEditingController(text: "90");
   String trainerID;
+
+  String contentType;
   @override
   void initState() {
     // TODO: implement initState
@@ -62,24 +68,25 @@ class _AddCourseState extends State<AddCourse> {
     data.add("");
   }
 
-  //TODO purchase
-  // trainerAutoId(String trainername) async {
-  //   var id = await _firestore.collection('batch_id').doc("batch_counts").get();
-  //   var totalFromDB = id.data()["total"];
-  //   int totalCount = totalFromDB + 1;
-  //
-  //   if (totalCount <= 9) {
-  //     print(
-  //         'ocn${trainername[0]}${trainername[trainername.length - 1]}0${totalCount}');
-  //     String trainerID =
-  //         'ocn${trainername[0]}${trainername[trainername.length - 1]}0${totalCount}';
-  //   } else {
-  //     print(
-  //         'ocn${trainername[0]}${trainername[trainername.length - 1]}${totalCount}');
-  //     String trainerID =
-  //         'ocn${trainername[0]}${trainername[trainername.length - 1]}${totalCount}';
+  var syllabusCount;
+  List syllabusFormat = [];
+  // syllabusId() async {
+  //   print("------------------------------------");
+  //   await for (var snapshot in _firestore
+  //       .collection('course')
+  //       .doc(trainerID)
+  //       .collection("syllabus")
+  //       .snapshots(includeMetadataChanges: true)) {
+  //     for (var message in snapshot.docs) {
+  //       syllabusCount = message.data()['section'];
+  //       print("${syllabusCount}syllabuscount");
+  //       syllabusFormat.add(syllabusCount);
+  //     }
+  //     print("${syllabusFormat.length}lengthlast");
+  //     print("${syllabusFormat}size");
   //   }
   // }
+
   String selectDate = 'select Date';
   Future<DateTime> _selectDateTime(BuildContext context) {
     return showDatePicker(
@@ -435,39 +442,96 @@ class _AddCourseState extends State<AddCourse> {
                   SizedBox(
                     height: 20,
                   ),
+                  isOnline
+                      ? Column(
+                          children: [
+                            Text(
+                              "Add Syllabus Details",
+                              style: aCourseStyle,
+                            ),
+
+                            // Add Listview
+                            sectionMainWidget(),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  child: aCustomButtom(
+                                      text: "Add new Section",
+                                      iconData: FontAwesomeIcons.plus,
+                                      buttonClick: () {
+                                        setState(() {
+                                          chapter[count] = [''];
+                                          count++;
+                                          print(" chapter${chapter}");
+                                          print("======================");
+                                          print("+++++++++++++++++++++++++");
+                                        });
+                                      },
+                                      fontSize: 23,
+                                      iconSize: 32),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                          ],
+                        )
+                      : isOffline
+                          ? Column(
+                              children: [
+                                Text(
+                                  "Add Syllabus Details",
+                                  style: aCourseStyle,
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      child: isFinish
+                                          ? aSuccessButton(
+                                              text: "Completed",
+                                              iconData: FontAwesomeIcons.check,
+                                              buttonClick: () {})
+                                          : aCustomButtom(
+                                              text: "upload Syllabus",
+                                              iconData: FontAwesomeIcons.plus,
+                                              buttonClick: () async {
+                                                FilePickerResult result =
+                                                    await FilePicker.platform
+                                                        .pickFiles();
+                                                if (result != null) {
+                                                  uploadfile =
+                                                      result.files.single.bytes;
+                                                  setState(() {
+                                                    filename = basename(result
+                                                        .files.single.name);
+                                                  });
+                                                  print(filename);
+                                                  setState(() {
+                                                    isFinish = true;
+                                                    uploadSyllabus(context);
+                                                  });
+                                                } else {
+                                                  print('pick pdf');
+                                                }
+                                                ///////
+                                              },
+                                              fontSize: 23,
+                                              iconSize: 32),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                              ],
+                            )
+                          : Column(),
                   Column(
                     children: [
-                      Text(
-                        "Add Syllabus Details",
-                        style: aCourseStyle,
-                      ),
-
-                      // Add Listview
-                      sectionMainWidget(),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            child: aCustomButtom(
-                                text: "Add new Section",
-                                iconData: FontAwesomeIcons.plus,
-                                buttonClick: () {
-                                  setState(() {
-                                    chapter[count] = [''];
-                                    count++;
-                                    print(" chapter${chapter}");
-                                  });
-                                },
-                                fontSize: 23,
-                                iconSize: 32),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -515,8 +579,8 @@ class _AddCourseState extends State<AddCourse> {
                                           "trainername": trainer.text,
                                           'batchid': trainerID,
                                           'duration': duration.text,
-                                          "date": "02-22-2000",
-                                          "time": "09-30",
+                                          "date": selectDate,
+                                          "time": selectedTime,
                                         })
                                       : _firestore
                                           .collection("offline_course")
@@ -527,10 +591,10 @@ class _AddCourseState extends State<AddCourse> {
                                           "mode":
                                               isOnline ? "Online" : "Offline",
                                           "rate": rupees.text,
+                                          "trainername": trainer.text,
                                           "img": getLink,
                                           'duration': duration.text,
-                                          'pdflink':
-                                              "https://firebasestorage.googleapis.com/v0/b/ocean-live.appspot.com/o/pdf%2FAngular%20Sylls.docx?alt=media&token=d7fb9ba2-f2ec-4a2a-aeb6-31a0da3e4648"
+                                          'pdflink': pdfLink
 
                                           ///TODO onchange
                                         });
@@ -553,7 +617,7 @@ class _AddCourseState extends State<AddCourse> {
                         height: 20,
                       )
                     ],
-                  ),
+                  )
                 ],
               ),
             ),
@@ -581,6 +645,26 @@ class _AddCourseState extends State<AddCourse> {
                 print(getLink);
               });
             }));
+  }
+
+  Future uploadSyllabus(BuildContext context) async {
+    Reference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child("Syllabus").child(filename);
+    UploadTask uploadTask = firebaseStorageRef.putData(uploadfile);
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {
+      setState(() {
+        print("Syllabus uploaded");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Syllabus  Uploaded')));
+        uploadTask.snapshot.ref.getDownloadURL().then((value) {
+          setState(() {
+            pdfLink = value;
+          });
+
+          print(pdfLink);
+        });
+      });
+    });
   }
 
   Widget chapterMainWidget(key) {
@@ -641,28 +725,24 @@ class _AddCourseState extends State<AddCourse> {
                     ),
                     button(
                         text: "Save",
-                        onPress: () {
-                          isOnline
-                              ? _firestore
-                                  .collection("course")
-                                  .doc(trainerID)
-                                  .collection('syllabus')
-                                  .doc(sectionvalue)
-                                  .set({
-                                  "section": sectionvalue,
-                                  "chapter": FieldValue.arrayUnion(subject),
-                                  "flag": false
-                                })
-                              : _firestore
-                                  .collection("offline_course")
-                                  .doc(trainerID)
-                                  .collection('syllabus')
-                                  .doc(sectionvalue)
-                                  .set({
-                                  "section": sectionvalue,
-                                  "chapter": FieldValue.arrayUnion(subject),
-                                  "flag": false,
-                                });
+                        onPress: () async {
+                          var syllabusList = await _firestore
+                              .collection('course')
+                              .doc(trainerID)
+                              .collection("syllabus")
+                              .get();
+                          _firestore
+                              .collection("course")
+                              .doc(trainerID)
+                              .collection('syllabus')
+                              .doc(
+                                  "${syllabusList.docs.length} ${sectionvalue}")
+                              .set({
+                            "section": sectionvalue,
+                            "chapter": FieldValue.arrayUnion(subject),
+                            "flag": false
+                          });
+
                           setState(() {
                             subject = [];
                           });

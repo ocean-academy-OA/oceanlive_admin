@@ -179,15 +179,19 @@ class _CourseState extends State<Course> {
                         final messageImage = message.data()['img'];
                         final messageCourse = message.data()['coursename'];
                         final messagedescription =
-                            message.data()['coursedescription'];
+                            message.data()['description'];
                         final courseMode = message.data()['mode'];
                         final courseRate = message.data()['rate'];
+                        final pdfLink = message.data()['pdflink'];
+                        final coursetrainer = message.data()['trainername'];
                         final course = CourseContent(
                           image: messageImage,
                           coursename: messageCourse,
                           coursedescription: messagedescription,
                           mode: courseMode,
                           rate: courseRate,
+                          pdf: pdfLink,
+                          trainername: coursetrainer,
                         );
                         // Text('$messageText from $messageSender');
                         courseContent.add(course);
@@ -325,6 +329,7 @@ class CourseContent extends StatefulWidget {
   final String rate;
   final String batchid;
   final String trainername;
+  final String pdf;
   CourseContent(
       {this.coursename,
       this.image,
@@ -332,6 +337,7 @@ class CourseContent extends StatefulWidget {
       this.trainername,
       this.mode,
       this.batchid,
+      this.pdf,
       this.rate});
 
   @override
@@ -357,6 +363,7 @@ class _CourseContentState extends State<CourseContent> {
                 rate: widget.rate,
                 batchid: widget.batchid,
                 trainername: widget.trainername,
+                pdfLink: widget.pdf,
               ));
             },
             child: ClipRRect(

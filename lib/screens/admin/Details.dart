@@ -338,6 +338,7 @@ class DeleteDetails extends StatefulWidget {
       this.dateofjoining,
       this.mobilenumber,
       this.qualification,
+      this.mode,
       this.trainerImage,
       this.studentImage,
       this.studentname,
@@ -353,6 +354,7 @@ class DeleteDetails extends StatefulWidget {
   String studentImage;
   String studentname;
   String coursename;
+  String mode;
   @override
   _DeleteDetailsState createState() => _DeleteDetailsState();
 }
@@ -524,24 +526,39 @@ class _DeleteDetailsState extends State<DeleteDetails> {
                                         .doc(deleteSubpay)
                                         .delete();
                                   })
-                                : setState(() {
-                                    Navigator.pop(this.context);
-                                    setState(() {
-                                      ScaffoldMessenger.of(this.context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text('course Deleted')));
-                                    });
-                                    _firestore
-                                        .collection("course")
-                                        .doc(ViewCourse.deleteCourse)
-                                        .delete();
-                                    _firestore
-                                        .collection("course")
-                                        .doc(ViewCourse.deleteCourse)
-                                        .collection("syllabus")
-                                        .doc(ViewCourse.deleteSyllabus)
-                                        .delete();
-                                  });
+                                : widget.mode == "Online"
+                                    ? setState(() {
+                                        Navigator.pop(this.context);
+                                        setState(() {
+                                          ScaffoldMessenger.of(this.context)
+                                              .showSnackBar(SnackBar(
+                                                  content:
+                                                      Text('course Deleted')));
+                                        });
+                                        _firestore
+                                            .collection("course")
+                                            .doc(ViewCourse.deleteCourse)
+                                            .delete();
+                                        _firestore
+                                            .collection("course")
+                                            .doc(ViewCourse.deleteCourse)
+                                            .collection("syllabus")
+                                            .doc(ViewCourse.deleteSyllabus)
+                                            .delete();
+                                      })
+                                    : setState(() {
+                                        Navigator.pop(this.context);
+                                        setState(() {
+                                          ScaffoldMessenger.of(this.context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      'course offline Deleted')));
+                                        });
+                                        _firestore
+                                            .collection("offline_course")
+                                            .doc(ViewCourse.offlineId)
+                                            .delete();
+                                      });
 
                     print(" course Deleted");
                     print(ViewCourse.deleteCourse);
@@ -2337,7 +2354,7 @@ class ViewStudentDetails extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Image.network(
-                    "${studentImage}",
+                    studentImage,
                     width: 180,
                     height: 180,
                     fit: BoxFit.fill,
