@@ -126,7 +126,7 @@ class _AdminState extends State<Admin> {
       child: GestureDetector(
         onTap: () {
           setState(() {
-            //   contentWidget = widget;
+            //contentWidget = widget;
 
             menuColor.updateAll((key, value) => menuColor[key] = false);
             menuColor[text] = true;

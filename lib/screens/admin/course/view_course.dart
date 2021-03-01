@@ -10,6 +10,9 @@ import 'package:ocean_live/screens/admin/course.dart';
 import 'package:ocean_live/screens/admin/Details.dart';
 import 'package:ocean_live/screens/admin/course/add_course.dart';
 import 'package:ocean_live/screens/admin/course/edit_course.dart';
+import 'package:ocean_live/screens/admin/course/online.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:ocean_live/screens/admin/notification/send_notification.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart';
@@ -25,24 +28,26 @@ class ViewCourse extends StatefulWidget {
   String rate;
   String desc;
   String batchid;
+  String pdfLink;
   static String deleteCourse;
   static String deleteSyllabus;
+  static String offlineId;
 
-  ViewCourse({
-    this.course,
-    this.mode,
-    this.desc,
-    this.img,
-    this.rate,
-    this.batchid,
-    this.trainername,
-  });
+  ViewCourse(
+      {this.course,
+      this.mode,
+      this.desc,
+      this.img,
+      this.rate,
+      this.batchid,
+      this.trainername,
+      this.pdfLink});
   @override
   _ViewCourseState createState() => _ViewCourseState();
 }
 
 class _ViewCourseState extends State<ViewCourse> {
-  var pdfLink;
+  //String pdfLink;
   String filename;
   Uint8List uploadfile;
   List key = [];
@@ -63,6 +68,15 @@ class _ViewCourseState extends State<ViewCourse> {
   //     print(courses.data());
   //   }
   // }
+
+  _launchURL() async {
+    final url = widget.pdfLink;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   IconData iconData;
   bool isVisible = false;
@@ -119,12 +133,28 @@ class _ViewCourseState extends State<ViewCourse> {
     }
   }
 
+  void offlineBatchId() async {
+    print("------------------------------------");
+    await for (var snapshot in _firestore
+        .collection('offline_course')
+        .where("coursename", isEqualTo: widget.course)
+        .snapshots(includeMetadataChanges: true)) {
+      for (var message in snapshot.docs) {
+        //print(message.documentID);
+        ViewCourse.offlineId = message.documentID;
+        print("${ViewCourse.offlineId}offline");
+        print("${widget.course}course");
+      }
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     chapterKey();
     courseId();
+    offlineBatchId();
 
     // getMessage();
     // var sample = _firestore.collection("online").get();
@@ -188,71 +218,98 @@ class _ViewCourseState extends State<ViewCourse> {
                           ),
                         ),
                         SizedBox(
-                          height: 15,
+                          height: 20,
                         ),
-                        StreamBuilder<QuerySnapshot>(
-                          stream: _firestore
-                              .collection('course')
-                              // .doc(widget.course)
-                              .doc(widget.batchid)
-                              .collection('syllabus')
-                              .snapshots(),
-                          // ignore: missing_return
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Text("Loading.....");
-                            } else {
-                              final messages = snapshot.data.docs;
-                              List<CourseDetails> courseDetails = [];
+                        widget.mode == "Offline"
+                            ? aCustomButtom(
+                                text: "View Syllabus",
+                                iconSize: 25,
+                                fontSize: 20,
+                                iconData: FontAwesomeIcons.bookReader,
+                                buttonClick: () {
+                                  ///todo view part
+                                  Provider.of<Routing>(context, listen: false)
+                                      .updateRouting(
+                                          widget: IframeScreen(
+                                    coursename: widget.course,
+                                    trainername: widget.trainername,
+                                    batchid: widget.batchid,
+                                    coursedescription: widget.desc,
+                                    mode: widget.mode,
+                                    pdf: widget.pdfLink,
+                                    image: widget.img,
+                                  ));
+                                },
+                              )
+                            : StreamBuilder<QuerySnapshot>(
+                                stream: _firestore
+                                    .collection('course')
+                                    // .doc(widget.course)
+                                    .doc(widget.batchid)
+                                    .collection('syllabus')
+                                    .snapshots(),
+                                // ignore: missing_return
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Text("Loading.....");
+                                  } else {
+                                    final messages = snapshot.data.docs;
+                                    List<CourseDetails> courseDetails = [];
 
-                              //List<String> subjects = [];
-                              String messageContent;
+                                    //List<String> subjects = [];
+                                    String messageContent;
 
-                              for (var message in messages) {
-                                List<Widget> chapterWidget = [];
-                                // if (message.data()['coursename'] == widget.course) {
-                                final messageSender =
-                                    message.data()[widget.course];
-                                final messageImage = message.data()[widget.img];
-                                final messageCoursedescription =
-                                    message.data()[widget.desc];
-                                final messageTopic = message.data()['section'];
-                                for (var i = 0;
-                                    i < message.data()["chapter"].length;
-                                    i++) {
-                                  messageContent = message.data()["chapter"][i];
-                                  chapterWidget.add(
-                                    Text(
-                                      "${messageContent}",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Color(0xff555454)),
-                                    ),
-                                  );
-                                  print(messageContent);
-                                }
+                                    for (var message in messages) {
+                                      List<Widget> chapterWidget = [];
+                                      // if (message.data()['coursename'] == widget.course) {
+                                      final messageSender =
+                                          message.data()[widget.course];
+                                      final messageImage =
+                                          message.data()[widget.img];
+                                      final messageCoursedescription =
+                                          message.data()[widget.desc];
+                                      final messageTopic =
+                                          message.data()['section'];
+                                      for (var i = 0;
+                                          i < message.data()["chapter"].length;
+                                          i++) {
+                                        messageContent =
+                                            message.data()["chapter"][i];
+                                        chapterWidget.add(
+                                          Text(
+                                            "${messageContent}",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Color(0xff555454)),
+                                          ),
+                                        );
+                                        print(messageContent);
+                                      }
 
-                                final details = CourseDetails(
-                                  coursename: messageSender,
-                                  image: messageImage,
-                                  description: messageCoursedescription,
-                                  topic: messageTopic,
-                                  chapterWidget: chapterWidget,
-                                );
+                                      final details = CourseDetails(
+                                        coursename: messageSender,
+                                        image: messageImage,
+                                        description: messageCoursedescription,
+                                        topic: messageTopic,
+                                        chapterWidget: chapterWidget,
+                                      );
 
-                                courseDetails.add(details);
+                                      courseDetails.add(details);
 
-                                print("test$messages");
+                                      print("test$messages");
 
-                                // }
+                                      // }
 
-                              }
+                                    }
 
-                              return Column(
-                                children: courseDetails,
-                              );
-                            }
-                          },
+                                    return Column(
+                                      children: courseDetails,
+                                    );
+                                  }
+                                },
+                              ),
+                        SizedBox(
+                          height: 15,
                         ),
                       ],
                     ),
@@ -281,6 +338,8 @@ class _ViewCourseState extends State<ViewCourse> {
                                     rate: widget.rate,
                                     description: widget.desc,
                                     trainername: widget.trainername,
+                                    mode: widget.mode,
+                                    pdflink: widget.pdfLink,
                                   ));
                                 }),
                             SizedBox(width: 20),
@@ -293,6 +352,7 @@ class _ViewCourseState extends State<ViewCourse> {
                                   displayDialog(
                                       name: DeleteDetails(
                                         coursename: widget.course,
+                                        mode: widget.mode,
                                       ),
                                       context: context);
                                 }),
@@ -385,73 +445,6 @@ class _ViewCourseState extends State<ViewCourse> {
                         ),
                         SizedBox(
                           height: 20.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            aCustomButtom(
-                                text: "Upload Syllabus",
-                                iconSize: 25,
-                                fontSize: 20,
-                                iconData: FontAwesomeIcons.edit,
-                                buttonClick: () async {
-                                  FilePickerResult result =
-                                      await FilePicker.platform.pickFiles();
-                                  if (result != null) {
-                                    uploadfile = result.files.single.bytes;
-                                    setState(() {
-                                      filename =
-                                          basename(result.files.single.name);
-                                    });
-                                    print(filename);
-                                  } else {
-                                    print('pick pdf');
-                                  }
-                                  ///////
-                                  Future uploadPic(BuildContext context) async {
-                                    Reference firebaseStorageRef =
-                                        FirebaseStorage.instance
-                                            .ref()
-                                            .child("Syllabus")
-                                            .child(filename);
-                                    UploadTask uploadTask =
-                                        firebaseStorageRef.putData(uploadfile);
-                                    TaskSnapshot taskSnapshot =
-                                        await uploadTask.whenComplete(() {
-                                      setState(() {
-                                        print("Profile Picture uploaded");
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content: Text(
-                                                    'Syllabus Picture Uploaded')));
-                                        uploadTask.snapshot.ref
-                                            .getDownloadURL()
-                                            .then((value) {
-                                          setState(() {
-                                            pdfLink = value;
-                                          });
-
-                                          print(pdfLink);
-                                          _firestore
-                                              .collection("Syllabus")
-                                              .add({
-                                            "pdflink": pdfLink,
-                                          });
-                                        });
-                                      });
-                                    });
-                                  }
-
-                                  uploadPic(context);
-                                }),
-                            SizedBox(width: 20),
-                            aCustomButtom(
-                                text: "Delete Syllabus",
-                                iconSize: 25,
-                                fontSize: 20,
-                                iconData: FontAwesomeIcons.trashAlt,
-                                buttonClick: () {}),
-                          ],
                         ),
                       ],
                     ),

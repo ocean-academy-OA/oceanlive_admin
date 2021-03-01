@@ -39,7 +39,7 @@ class _SendNotificationState extends State<SendNotification> {
   @override
   void initState() {
     // TODO: implement initState
-    customWidget = ViewNotification();
+    //customWidget = ViewNotification();
     super.initState();
   }
 
@@ -77,46 +77,116 @@ class _SendNotificationState extends State<SendNotification> {
   }
 }
 
-class ViewNotification extends StatelessWidget {
+class ViewNotification extends StatefulWidget {
   const ViewNotification({
     Key key,
   }) : super(key: key);
 
   @override
+  _ViewNotificationState createState() => _ViewNotificationState();
+}
+
+class _ViewNotificationState extends State<ViewNotification> {
+  List<Widget> usersList = [];
+
+  var users;
+  var name;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    userListId();
+  }
+
+  void userListId() async {
+    print("------------------------------------");
+    await for (var snapshot in _firestore
+        .collection('new users')
+        .snapshots(includeMetadataChanges: true)) {
+      for (var message in snapshot.docs) {
+        //print(message.documentID);
+        users = message.documentID;
+        // usersList.add(users);
+        getUserName(users);
+
+        // getFunction(users);
+      }
+    }
+  }
+
+  getUserName(String userNumber) async {
+    await for (var snapshot in _firestore
+        .collection('new users')
+        .where("Phone Number", isEqualTo: userNumber)
+        .snapshots(includeMetadataChanges: true)) {
+      for (var message in snapshot.docs) {
+        name = message.data()["First Name"];
+
+        getNotification(userNumber, name);
+      }
+    }
+  }
+
+  getNotification(String userNumber, String userName) async {
+    await for (var snapshot in _firestore
+        .collection('new users')
+        .doc(userNumber)
+        .collection("notification")
+        .snapshots(includeMetadataChanges: true)) {
+      for (var message in snapshot.docs) {
+        var description = message.data()['description'];
+        print(userName);
+        print(userNumber);
+        print(description);
+        Container userNotification = Container(
+          margin: EdgeInsets.symmetric(vertical: 20.0),
+          width: 1300,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            color: Color(0XFFF7F7F7),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                // spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                userName,
+                style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF002C47)),
+              ),
+              Text(
+                description,
+                style: TextStyle(fontSize: 16, color: Color(0xFF555454)),
+              ),
+            ],
+          ),
+        );
+        usersList.add(userNotification);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        color: Color(0XFFF7F7F7),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Guna Salini",
-            style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF002C47)),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book.",
-            style: TextStyle(fontSize: 16, color: Color(0xFF555454)),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        Column(
+          children: [],
+        ),
+        SizedBox(
+          height: 30,
+        )
+      ],
     );
   }
 }
