@@ -13,6 +13,7 @@ import 'package:ocean_live/models/routing.dart';
 import 'package:ocean_live/screens/admin/Details.dart';
 import 'package:ocean_live/screens/admin/course.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart';
 import 'package:video_player/video_player.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -241,96 +242,96 @@ class Content1 extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                child: Column(
-                  children: [
-                    SizedBox(height: 20),
-                    Container(
-                      child: Text(
+              Expanded(
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
                         'Heading 1',
                         style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
+                            fontSize: 20, fontWeight: FontWeight.w600),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      width: 1000,
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          "Lorem Aldus PageMaker including versions of Lorem Ipsum.  PageMaker including versions of Lorem Ipsum  PageMaker including versions of Lorem Ipsum  PageMaker including versions of Lorem Ipsum  PageMaker including versions of Lorem Ipsum Lorem Ipsum  PageMaker including versions of Lorem Ipsum Lorem Ipsum  PageMaker including versions of Lorem Ipsum",
-                          style: TextStyle(fontSize: 16),
-                          softWrap: true,
-                          maxLines: 2,
-                          overflow: TextOverflow.visible,
+                      SizedBox(height: 20),
+                      Container(
+                        child: Padding(
+                          padding: EdgeInsets.all(25),
+                          child: Text(
+                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                            style: TextStyle(fontSize: 16),
+                            softWrap: true,
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      child: Text(
-                        'Heading 2',
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      width: 1000,
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
+                      SizedBox(height: 20),
+                      Container(
                         child: Text(
-                          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                          style: TextStyle(fontSize: 16),
-                          softWrap: true,
-                          maxLines: 2,
-                          overflow: TextOverflow.clip,
+                          'Heading 2',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      child: Text(
-                        'Heading 3',
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      width: 1000,
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                          style: TextStyle(fontSize: 16),
-                          softWrap: true,
-                          maxLines: 2,
-                          overflow: TextOverflow.clip,
+                      SizedBox(height: 20),
+                      Container(
+                        child: Padding(
+                          padding: EdgeInsets.all(25),
+                          child: Text(
+                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                            style: TextStyle(fontSize: 16),
+                            softWrap: true,
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 20),
+                      Container(
+                        child: Text(
+                          'Heading 3',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                        child: Padding(
+                          padding: EdgeInsets.all(25),
+                          child: Text(
+                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                            style: TextStyle(fontSize: 16),
+                            softWrap: true,
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.only(),
-                child: Row(
-                  children: [
-                    Container(
-                      child: Image.asset(
-                        "images/girl.jpg",
-                        height: 500,
-                        width: 300,
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        child: Image.asset(
+                          "images/girl.jpg",
+                          height: 500,
+                          width: 300,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: 50),
+        SizedBox(height: 60),
       ],
     );
   }
@@ -346,6 +347,7 @@ class Content2 extends StatefulWidget {
 class _Content2State extends State<Content2> {
   Uint8List uploadfile;
   bool isComplete = false, isOnline = false, isOffline = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -414,10 +416,11 @@ class _Content2State extends State<Content2> {
           Container(
             color: Colors.grey[100],
             height: 400,
-            width: 550,
+            width: double.infinity,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Videos(),
+                Center(child: Videos()),
               ],
             ),
           ),
@@ -430,7 +433,7 @@ class _Content2State extends State<Content2> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 onPressed: () {
-                  displayDialog(name: Content1UploadAlert(), context: context);
+                  displayDialog(name: Content2UploadAlert(), context: context);
                 },
                 color: Colors.blue,
                 child: Row(
@@ -481,7 +484,7 @@ class _Content2State extends State<Content2> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
-                  displayDialog(context: context, name: Content1EditAlert());
+                  displayDialog(context: context, name: Content2EditAlert());
                 },
               ),
             ],
@@ -489,10 +492,144 @@ class _Content2State extends State<Content2> {
           SizedBox(height: 50),
           Container(
             color: Colors.grey[100],
-            height: 500,
-            width: 1200,
-            child: Row(
-              children: [],
+            width: double.infinity,
+            child: Padding(
+              padding: EdgeInsets.all(60),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: RichText(
+                      text: TextSpan(
+                        text: '1.',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600),
+                        children: [
+                          TextSpan(
+                            text:
+                                ' How abundance blocks are holding you back from wealth.',
+                            style: TextStyle(
+                                color: Colors.black87, letterSpacing: 0.3),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      ' Discover eye-opening insights into the world of abundance blocks and how they prevent you every day from manifesting the wealth you deserve.',
+                      maxLines: 6,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    child: RichText(
+                      text: TextSpan(
+                        text: '2.',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600),
+                        children: [
+                          TextSpan(
+                            text:
+                                ' How abundance blocks are holding you back from wealth.',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      ' Discover eye-opening insights into the world of abundance blocks and how they prevent you every day from manifesting the wealth you deserve.',
+                      maxLines: 6,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    child: RichText(
+                      text: TextSpan(
+                        text: '3.',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600),
+                        children: [
+                          TextSpan(
+                            text:
+                                ' How abundance blocks are holding you back from wealth.',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      ' Discover eye-opening insights into the world of abundance blocks and how they prevent you every day from manifesting the wealth you deserve.',
+                      maxLines: 6,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    child: RichText(
+                      text: TextSpan(
+                        text: '4.',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600),
+                        children: [
+                          TextSpan(
+                            text:
+                                ' How abundance blocks are holding you back from wealth.',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      ' Discover eye-opening insights into the world of abundance blocks and how they prevent you every day from manifesting the wealth you deserve.',
+                      maxLines: 6,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    child: RichText(
+                      text: TextSpan(
+                        text: '5.',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600),
+                        children: [
+                          TextSpan(
+                            text:
+                                ' How abundance blocks are holding you back from wealth.',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      ' Discover eye-opening insights into the world of abundance blocks and how they prevent you every day from manifesting the wealth you deserve.',
+                      maxLines: 6,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 100),
@@ -586,19 +723,28 @@ class _Content3State extends State<Content3> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: 800,
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text(
-                        'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.'),
+                Expanded(
+                  child: Container(
+                    width: 800,
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.',
+                        style: TextStyle(height: 2, letterSpacing: 0.2),
+                        maxLines: 20,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
                 ),
-                Container(
-                  height: 500,
-                  width: 400,
-                  child: Image.asset(
-                    'images/pichai.jpg',
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    height: 300,
+                    width: 300,
+                    child: Image.asset(
+                      'images/pichai.jpg',
+                    ),
                   ),
                 ),
               ],
@@ -619,10 +765,13 @@ class Content1UploadAlert extends StatefulWidget {
 }
 
 class _Content1UploadAlertState extends State<Content1UploadAlert> {
-  @override
   String heading1;
   String heading2;
   String heading3;
+  var studentId = 0;
+  var mentorImage;
+  String filename;
+  Uint8List uploadfile;
   final heading1Controller = TextEditingController();
   final heading2Controller = TextEditingController();
   final heading3Controller = TextEditingController();
@@ -655,6 +804,7 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
           fontSize: 15,
         ),
       ),
+      controller: heading1Controller,
       onChanged: (value) {
         heading1 = value;
       },
@@ -728,6 +878,290 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 550,
+      width: 460,
+      color: Colors.white,
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              Container(
+                color: Colors.blue,
+                height: 100,
+                width: 500,
+                child: Center(
+                  child: Text(
+                    'Content 1',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10, right: 20),
+                    child: RaisedButton(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Color(0xff0090E9),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.upload_outlined,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(width: 5),
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'Upload',
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Color(0xff0090E9),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        FilePickerResult result =
+                            await FilePicker.platform.pickFiles();
+                        if (result != null) {
+                          uploadfile = result.files.single.bytes;
+                          setState(() {
+                            filename = basename(result.files.single.name);
+                          });
+                          print(filename);
+                        } else {
+                          print('pick imafe');
+                        }
+                        ///////
+                        Future uploadPic(BuildContext context) async {
+                          Reference firebaseStorageRef = FirebaseStorage
+                              .instance
+                              .ref()
+                              .child("Mentor")
+                              .child(filename);
+                          UploadTask uploadTask =
+                              firebaseStorageRef.putData(uploadfile);
+                          TaskSnapshot taskSnapshot =
+                              await uploadTask.whenComplete(() {
+                            setState(() {
+                              print("Profile Picture uploaded");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Staff Picture Uploaded')));
+                              uploadTask.snapshot.ref
+                                  .getDownloadURL()
+                                  .then((value) {
+                                setState(() {
+                                  mentorImage = value;
+                                });
+
+                                print({mentorImage});
+                              });
+                            });
+                          });
+                        }
+
+                        print('$mentorImage');
+                        uploadPic(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 70,
+                    width: 330,
+                    child: _heading1(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 70,
+                    width: 330,
+                    child: _heading2(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 70,
+                    width: 330,
+                    child: _heading3(),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              RaisedButton(
+                color: Colors.blue,
+                onPressed: () {
+                  _firestore.collection('Webinar').add({
+                    'heading1': heading1,
+                    'heading2': heading2,
+                    'heading3': heading3,
+                  });
+                  heading1Controller.clear();
+                  heading2Controller.clear();
+                  heading3Controller.clear();
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              )
+            ],
+          ),
+          Positioned(
+            left: 15,
+            top: 60,
+            child: CircleAvatar(
+              backgroundColor: Colors.grey[200],
+              maxRadius: 45,
+            ),
+          ),
+          Positioned(
+            width: 35,
+            top: 30,
+            right: 13,
+            child: RaisedButton(
+              elevation: 0,
+              hoverColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+              ),
+              padding: EdgeInsets.zero,
+              color: Colors.blue,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.cancel_outlined,
+                color: Colors.black,
+                size: 35,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+/// < Content 2 Upload Alert > ///
+
+class Content2UploadAlert extends StatefulWidget {
+  @override
+  _Content2UploadAlertState createState() => _Content2UploadAlertState();
+}
+
+class _Content2UploadAlertState extends State<Content2UploadAlert> {
+  String heading1;
+  String heading2;
+
+  final heading1Controller = TextEditingController();
+  final heading2Controller = TextEditingController();
+
+  Widget _heading1() {
+    return TextFormField(
+      maxLines: null,
+      minLines: 10,
+      validator: (value) {
+        if (value.isEmpty) {
+          print(value);
+          return "query is required";
+        } else if (value.length < 2) {
+          return 'character should be more than 2';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 40, left: 5),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(width: 1, color: Colors.black54)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+        ),
+        labelText: 'Title',
+        labelStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 15,
+        ),
+      ),
+      onChanged: (value) {
+        heading1 = value;
+      },
+    );
+  }
+
+  Widget _heading2() {
+    return TextFormField(
+      maxLines: null,
+      minLines: 10,
+      validator: (value) {
+        if (value.isEmpty) {
+          print(value);
+          return "query is required";
+        } else if (value.length < 2) {
+          return 'character should be more than 2';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 40, left: 5),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(width: 1, color: Colors.black54)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+        ),
+        labelText: 'Sub Title',
+        labelStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 15,
+        ),
+      ),
+      controller: heading2Controller,
+      onChanged: (value) {
+        heading2 = value;
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: 550,
@@ -792,12 +1226,12 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Text(
-                  //   'Heading 1',
-                  //   style: TextStyle(fontSize: 18),
-                  // ),
+                  Icon(
+                    Icons.title_outlined,
+                    color: Colors.blue,
+                  ),
                   Container(
-                    height: 70,
+                    height: 120,
                     width: 330,
                     child: _heading1(),
                   ),
@@ -807,35 +1241,18 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Text(
-                  //   'Heading 2',
-                  //   style: TextStyle(fontSize: 18),
-                  // ),
+                  Icon(
+                    Icons.subtitles_outlined,
+                    color: Colors.blue,
+                  ),
                   Container(
-                    height: 70,
+                    height: 120,
                     width: 330,
                     child: _heading2(),
                   ),
                 ],
               ),
               SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Text(
-                  //   'Heading 3',
-                  //   style: TextStyle(fontSize: 18),
-                  // ),
-                  Container(
-                    height: 70,
-                    width: 330,
-                    child: _heading3(),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
               RaisedButton(
                 color: Colors.blue,
                 onPressed: () {},
@@ -884,20 +1301,6 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
         ],
       ),
     );
-  }
-}
-
-/// < Content 2 Upload Alert > ///
-
-class Content2UploadAlert extends StatefulWidget {
-  @override
-  _Content2UploadAlertState createState() => _Content2UploadAlertState();
-}
-
-class _Content2UploadAlertState extends State<Content2UploadAlert> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
 
@@ -1094,6 +1497,9 @@ class _Content1EditAlertState extends State<Content1EditAlert> {
   String heading1;
   String heading2;
   String heading3;
+  var mentorImage;
+  String filename;
+  Uint8List uploadfile;
   final heading1Controller = TextEditingController();
   final heading2Controller = TextEditingController();
   final heading3Controller = TextEditingController();
@@ -1254,7 +1660,50 @@ class _Content1EditAlertState extends State<Content1EditAlert> {
                         ],
                       ),
                       textColor: Colors.white,
-                      onPressed: () {},
+                      onPressed: () async {
+                        FilePickerResult result =
+                            await FilePicker.platform.pickFiles();
+                        if (result != null) {
+                          uploadfile = result.files.single.bytes;
+                          setState(() {
+                            filename = basename(result.files.single.name);
+                          });
+                          print(filename);
+                        } else {
+                          print('pick imafe');
+                        }
+                        ///////
+                        Future uploadPic(BuildContext context) async {
+                          Reference firebaseStorageRef = FirebaseStorage
+                              .instance
+                              .ref()
+                              .child("Mentor")
+                              .child(filename);
+                          UploadTask uploadTask =
+                              firebaseStorageRef.putData(uploadfile);
+                          TaskSnapshot taskSnapshot =
+                              await uploadTask.whenComplete(() {
+                            setState(() {
+                              print("Profile Picture uploaded");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Staff Picture Uploaded')));
+                              uploadTask.snapshot.ref
+                                  .getDownloadURL()
+                                  .then((value) {
+                                setState(() {
+                                  mentorImage = value;
+                                });
+
+                                print({mentorImage});
+                              });
+                            });
+                          });
+                        }
+
+                        print('$mentorImage');
+                        uploadPic(context);
+                      },
                     ),
                   ),
                 ],
@@ -1307,6 +1756,232 @@ class _Content1EditAlertState extends State<Content1EditAlert> {
               SizedBox(
                 height: 20,
               ),
+              RaisedButton(
+                color: Colors.blue,
+                onPressed: () {},
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              )
+            ],
+          ),
+          Positioned(
+            left: 15,
+            top: 60,
+            child: CircleAvatar(
+              child: Image.network('$mentorImage'),
+              backgroundColor: Colors.grey[200],
+              maxRadius: 45,
+            ),
+          ),
+          Positioned(
+            width: 35,
+            top: 30,
+            right: 13,
+            child: RaisedButton(
+              elevation: 0,
+              hoverColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+              ),
+              padding: EdgeInsets.zero,
+              color: Colors.blue,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.cancel_outlined,
+                color: Colors.black,
+                size: 35,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+/// < Content 2 Edit Alert > ///
+
+class Content2EditAlert extends StatefulWidget {
+  @override
+  _Content2EditAlertState createState() => _Content2EditAlertState();
+}
+
+class _Content2EditAlertState extends State<Content2EditAlert> {
+  String heading1;
+  String heading2;
+  final heading1Controller = TextEditingController();
+  final heading2Controller = TextEditingController();
+
+  Widget _heading1() {
+    return TextFormField(
+      maxLines: null,
+      minLines: 10,
+      validator: (value) {
+        if (value.isEmpty) {
+          print(value);
+          return "query is required";
+        } else if (value.length < 2) {
+          return 'character should be more than 2';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 40, left: 5),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(width: 1, color: Colors.black54)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+        ),
+        labelText: 'Title',
+        labelStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 15,
+        ),
+      ),
+      onChanged: (value) {
+        heading1 = value;
+      },
+    );
+  }
+
+  Widget _heading2() {
+    return TextFormField(
+      maxLines: null,
+      minLines: 10,
+      validator: (value) {
+        if (value.isEmpty) {
+          print(value);
+          return "query is required";
+        } else if (value.length < 2) {
+          return 'character should be more than 2';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 40, left: 5),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(width: 1, color: Colors.black54)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+        ),
+        labelText: 'Sub Title',
+        labelStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 15,
+        ),
+      ),
+      controller: heading2Controller,
+      onChanged: (value) {
+        heading2 = value;
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 550,
+      width: 460,
+      color: Colors.white,
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              Container(
+                color: Colors.blue,
+                height: 100,
+                width: 500,
+                child: Center(
+                  child: Text(
+                    'Content 1',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10, right: 20),
+                    child: RaisedButton(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Color(0xff0090E9),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.upload_outlined,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(width: 5),
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'Upload',
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Color(0xff0090E9),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      textColor: Colors.white,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.title_outlined,
+                    color: Colors.blue,
+                  ),
+                  Container(
+                    height: 120,
+                    width: 330,
+                    child: _heading1(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.subtitles_outlined,
+                    color: Colors.blue,
+                  ),
+                  Container(
+                    height: 120,
+                    width: 330,
+                    child: _heading2(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
               RaisedButton(
                 color: Colors.blue,
                 onPressed: () {},
