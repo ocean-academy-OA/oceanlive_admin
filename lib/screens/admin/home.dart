@@ -12,11 +12,11 @@ import 'package:ocean_live/screens/admin/mentor.dart';
 import 'package:ocean_live/screens/admin/notification.dart';
 import 'package:ocean_live/screens/admin/upcoming_batch.dart';
 import 'package:ocean_live/screens/admin/video.dart';
-import 'package:ocean_live/screens/admin/webinar.dart';
+
 import 'package:ocean_live/widgets/admin/appbar_widget.dart';
 import 'package:provider/provider.dart';
-
 import 'Details.dart';
+import 'webinar/webinar.dart';
 
 class Admin extends StatefulWidget {
   @override

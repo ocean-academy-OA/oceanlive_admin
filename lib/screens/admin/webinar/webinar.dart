@@ -71,6 +71,7 @@ class _WebinarState extends State<Webinar> {
                   ],
                 ),
                 SizedBox(height: 50),
+                SizedBox(height: 50),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -166,7 +167,39 @@ class _WebinarState extends State<Webinar> {
 
 /// < Content 1 > ///
 
-class Content1 extends StatelessWidget {
+class Content1 extends StatefulWidget {
+  static TextEditingController paymentController = TextEditingController();
+
+  @override
+  _Content1State createState() => _Content1State();
+}
+
+class _Content1State extends State<Content1> {
+  bool _visibility = false;
+
+  String payment;
+
+  Widget _paymentField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 40, left: 5),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(width: 1, color: Colors.black54)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+        ),
+        labelText: 'Payment',
+        labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
+      ),
+      controller: Content1.paymentController,
+      onChanged: (value) {
+        payment = value;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -174,6 +207,42 @@ class Content1 extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            RaisedButton(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: Color(0xff0090E9),
+                  width: 3,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              onPressed: () {
+                setState(() {
+                  _visibility = !_visibility;
+                });
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.payment_outlined,
+                    color: Colors.blue,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Payment Mode',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 10),
+            Visibility(
+              visible: _visibility,
+              child: Container(height: 40, width: 100, child: _paymentField()),
+            ),
+            Spacer(),
             RaisedButton(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -233,105 +302,220 @@ class Content1 extends StatelessWidget {
                 displayDialog(context: context, name: Content1EditAlert());
               },
             ),
+            SizedBox(width: 20),
+            RaisedButton(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: Color(0xff0090E9),
+                  width: 3,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.date_range_outlined,
+                    color: Colors.blue,
+                  ),
+                  SizedBox(width: 5),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Date and Time',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Color(0xff0090E9),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              textColor: Colors.white,
+              onPressed: () {
+                // DateTimePicker();
+              },
+            ),
           ],
         ),
         SizedBox(height: 50),
+        StreamBuilder<QuerySnapshot>(
+          stream: _firestore.collection('Webinar').snapshots(),
+          // ignore: missing_return
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Text("Loading.....");
+            } else {
+              final messages = snapshot.data.docs;
+              print('${messages} docs////////////////////////');
+              List<DbContent1> upcoming = [];
+              for (var message in messages) {
+                final dbMessageName = message.data()['trainer name'];
+                final dbMessageImage = message.data()['trainer image'];
+                final dbHeading1 = message.data()['super title'];
+                final dbHeading2 = message.data()['main title'];
+                final dbHeading3 = message.data()['main subtitle'];
+                print("${dbMessageName}   296/  /////////////////////////");
+                if (dbMessageName != null ||
+                    dbMessageImage != null &&
+                        dbHeading1 != null &&
+                        dbHeading2 != null &&
+                        dbHeading3 != null) {
+                  final dbUpcomingImage = DbContent1(
+                    trainerName: dbMessageName,
+                    trainerImage: dbMessageImage,
+                    superTitle: dbHeading1,
+                    mainTitle: dbHeading2,
+                    mainSubtitle: dbHeading3,
+                  );
+                  upcoming.add(dbUpcomingImage);
+                }
+              }
+              return Column(
+                children: upcoming,
+              );
+            }
+          },
+        ),
+        SizedBox(height: 80),
+      ],
+    );
+  }
+}
+
+/// < StremBuilder Content 1 > ///
+
+class DbContent1 extends StatefulWidget {
+  String trainerName;
+  String trainerImage;
+  String superTitle;
+  String mainTitle;
+  String mainSubtitle;
+
+  DbContent1(
+      {this.trainerImage,
+      this.superTitle,
+      this.mainTitle,
+      this.mainSubtitle,
+      this.trainerName});
+  @override
+  _DbContent1State createState() => _DbContent1State();
+}
+
+class _DbContent1State extends State<DbContent1> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
         Container(
           padding: EdgeInsets.all(50),
           color: Colors.grey[100],
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              Expanded(
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Heading 1',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.all(25),
-                          child: Text(
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                            style: TextStyle(fontSize: 16),
-                            softWrap: true,
-                            maxLines: 6,
-                            overflow: TextOverflow.ellipsis,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Heading 1',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w600),
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        child: Text(
-                          'Heading 2',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.all(25),
-                          child: Text(
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                            style: TextStyle(fontSize: 16),
-                            softWrap: true,
-                            maxLines: 6,
-                            overflow: TextOverflow.ellipsis,
+                          SizedBox(height: 20),
+                          Container(
+                            child: Padding(
+                              padding: EdgeInsets.all(25),
+                              child: Text(
+                                "${widget.superTitle}",
+                                style: TextStyle(fontSize: 16),
+                                softWrap: true,
+                                maxLines: 6,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        child: Text(
-                          'Heading 3',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.all(25),
-                          child: Text(
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                            style: TextStyle(fontSize: 16),
-                            softWrap: true,
-                            maxLines: 6,
-                            overflow: TextOverflow.ellipsis,
+                          SizedBox(height: 20),
+                          Container(
+                            child: Text(
+                              'Heading 2',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w600),
+                            ),
                           ),
-                        ),
+                          SizedBox(height: 20),
+                          Container(
+                            child: Padding(
+                              padding: EdgeInsets.all(25),
+                              child: Text(
+                                "${widget.mainTitle}",
+                                style: TextStyle(fontSize: 16),
+                                softWrap: true,
+                                maxLines: 6,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Container(
+                            child: Text(
+                              'Heading 3',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Container(
+                            child: Padding(
+                              padding: EdgeInsets.all(25),
+                              child: Text(
+                                "${widget.mainSubtitle}",
+                                style: TextStyle(fontSize: 16),
+                                softWrap: true,
+                                maxLines: 6,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        child: Image.asset(
-                          "images/girl.jpg",
-                          height: 500,
-                          width: 300,
-                        ),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 350,
+                            width: 500,
+                            child: Image.network(
+                              "${widget.trainerImage}",
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.bottomCenter,
+                            width: 500,
+                            child: Text(
+                              '${widget.trainerName}',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
         ),
-        SizedBox(height: 60),
       ],
     );
   }
@@ -366,7 +550,8 @@ class _Content2State extends State<Content2> {
                     if (result != null) {
                       uploadfile = result.files.single.bytes;
                       setState(() {
-                        Video.filename = basename(result.files.single.name);
+                        MentorVideos.filename =
+                            basename(result.files.single.name);
                       });
                       print(Video.filename);
                     } else {
@@ -378,16 +563,16 @@ class _Content2State extends State<Content2> {
                     Future uploadPic(BuildContext context) async {
                       Reference firebaseStorageRef = FirebaseStorage.instance
                           .ref()
-                          .child("Video")
+                          .child("webinar_video")
                           .child(Video.filename);
                       UploadTask uploadTask =
                           firebaseStorageRef.putData(uploadfile);
                       TaskSnapshot taskSnapshot =
                           await uploadTask.whenComplete(() {
                         setState(() {
-                          print("Profile Picture uploaded");
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Profile Picture Uploaded')));
+                          print("Video uploaded");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Video Uploaded')));
                           uploadTask.snapshot.ref
                               .getDownloadURL()
                               .then((value) {
@@ -397,8 +582,8 @@ class _Content2State extends State<Content2> {
 
                             print(Video.getLink);
                             _firestore
-                                .collection("Video")
-                                .add({"Video": Video.getLink});
+                                .collection("Webinar")
+                                .add({"webinarvideo": Video.getLink});
                           });
                         });
                       });
@@ -420,7 +605,7 @@ class _Content2State extends State<Content2> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(child: Videos()),
+                Center(child: MentorVideos()),
               ],
             ),
           ),
@@ -717,39 +902,33 @@ class _Content3State extends State<Content3> {
             ],
           ),
           SizedBox(height: 50),
-          Container(
-            padding: EdgeInsets.all(50),
-            color: Colors.grey[100],
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Container(
-                    width: 800,
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text(
-                        'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.',
-                        style: TextStyle(height: 2, letterSpacing: 0.2),
-                        maxLines: 20,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    height: 300,
-                    width: 300,
-                    child: Image.asset(
-                      'images/pichai.jpg',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // StreamBuilder<QuerySnapshot>(
+          //   stream: _firestore.collection('Webinar').snapshots(),
+          //   // ignore: missing_return
+          //   builder: (context, snapshot) {
+          //     if (!snapshot.hasData) {
+          //       return Text("Loading.....");
+          //     } else {
+          //       final messages = snapshot.data.docs;
+          //       List<Dbcontent3> upcoming = [];
+          //       for (var message in messages) {
+          //         final dbmessageImage = message.data()['aboutmentorimage'];
+          //         final dbmentorDescription =
+          //             message.data()['mentorDescription'];
+          //         if (dbmessageImage != null && dbmentorDescription != null) {
+          //           final content1 = Dbcontent3(
+          //             mentorImage: dbmessageImage,
+          //             mentorDescription: dbmentorDescription,
+          //           );
+          //           upcoming.add(content1);
+          //         }
+          //         return Column(
+          //           children: upcoming,
+          //         );
+          //       }
+          //     }
+          //   },
+          // ),
           SizedBox(height: 100),
         ],
       ),
@@ -757,38 +936,92 @@ class _Content3State extends State<Content3> {
   }
 }
 
+/// < content 3 Strembuilder > ///
+
+class Dbcontent3 extends StatefulWidget {
+  String mentorImage;
+  String mentorDescription;
+
+  Dbcontent3({this.mentorImage, this.mentorDescription});
+
+  @override
+  _Dbcontent3State createState() => _Dbcontent3State();
+}
+
+class _Dbcontent3State extends State<Dbcontent3> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(50),
+          color: Colors.grey[100],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Container(
+                  width: 800,
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      '${widget.mentorDescription}',
+                      style: TextStyle(height: 2, letterSpacing: 0.2),
+                      maxLines: 20,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  height: 300,
+                  width: 300,
+                  child: Image.network(
+                    '${widget.mentorImage}',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 ///< Content 1 Upload Alert >///
 
 class Content1UploadAlert extends StatefulWidget {
+  static TextEditingController courseController = TextEditingController();
+
   @override
   _Content1UploadAlertState createState() => _Content1UploadAlertState();
 }
 
 class _Content1UploadAlertState extends State<Content1UploadAlert> {
-  String heading1;
-  String heading2;
-  String heading3;
-  var studentId = 0;
+  //variables
   var mentorImage;
-  String filename;
   Uint8List uploadfile;
+  String filename;
+  String superTopic;
+  String mainTitle;
+  String mainSubtitle;
+  String trainerName;
+  String course;
+  String webinarDuration;
+
+  //TextEditingControllers
   final heading1Controller = TextEditingController();
   final heading2Controller = TextEditingController();
   final heading3Controller = TextEditingController();
+  final trainerNameController = TextEditingController();
+  final webinarDurationController = TextEditingController();
 
-  Widget _heading1() {
+  //TextFields
+  Widget _superTopicField() {
     return TextFormField(
-      maxLines: null,
-      minLines: 3,
-      validator: (value) {
-        if (value.isEmpty) {
-          print(value);
-          return "query is required";
-        } else if (value.length < 2) {
-          return 'character should be more than 2';
-        }
-        return null;
-      },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.only(top: 40, left: 5),
         enabledBorder: OutlineInputBorder(
@@ -798,32 +1031,21 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
           borderRadius: BorderRadius.all(Radius.circular(8)),
           borderSide: BorderSide(width: 1, color: Colors.blueAccent),
         ),
-        labelText: 'Heading 1',
+        labelText: 'Super Topic',
         labelStyle: TextStyle(
-          color: Colors.black,
+          color: Colors.grey,
           fontSize: 15,
         ),
       ),
       controller: heading1Controller,
       onChanged: (value) {
-        heading1 = value;
+        superTopic = value;
       },
     );
   }
 
-  Widget _heading2() {
+  Widget _mainTitleField() {
     return TextFormField(
-      maxLines: null,
-      minLines: 10,
-      validator: (value) {
-        if (value.isEmpty) {
-          print(value);
-          return "query is required";
-        } else if (value.length < 2) {
-          return 'character should be more than 2';
-        }
-        return null;
-      },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.only(top: 40, left: 5),
         enabledBorder: OutlineInputBorder(
@@ -833,32 +1055,21 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
           borderRadius: BorderRadius.all(Radius.circular(8)),
           borderSide: BorderSide(width: 1, color: Colors.blueAccent),
         ),
-        labelText: 'Heading 2',
+        labelText: 'Main Title',
         labelStyle: TextStyle(
-          color: Colors.black,
+          color: Colors.grey,
           fontSize: 15,
         ),
       ),
       controller: heading2Controller,
       onChanged: (value) {
-        heading2 = value;
+        mainTitle = value;
       },
     );
   }
 
-  Widget _heading3() {
+  Widget _mainSubtitleField() {
     return TextFormField(
-      maxLines: null,
-      minLines: 10,
-      validator: (value) {
-        if (value.isEmpty) {
-          print(value);
-          return "query is required";
-        } else if (value.length < 2) {
-          return 'character should be more than 2';
-        }
-        return null;
-      },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.only(top: 40, left: 5),
         enabledBorder: OutlineInputBorder(
@@ -868,12 +1079,75 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
           borderRadius: BorderRadius.all(Radius.circular(8)),
           borderSide: BorderSide(width: 1, color: Colors.blueAccent),
         ),
-        labelText: 'Heading 3',
-        labelStyle: TextStyle(color: Colors.black, fontSize: 15),
+        labelText: 'Main Subtitle',
+        labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
       ),
       controller: heading3Controller,
       onChanged: (value) {
-        heading3 = value;
+        mainSubtitle = value;
+      },
+    );
+  }
+
+  Widget _trainerNameField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 40, left: 5),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(width: 1, color: Colors.black54)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+        ),
+        labelText: 'Trainer Name',
+        labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
+      ),
+      controller: trainerNameController,
+      onChanged: (value) {
+        trainerName = value;
+      },
+    );
+  }
+
+  Widget _courseField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 40, left: 5),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(width: 1, color: Colors.black54)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+        ),
+        labelText: 'Course',
+        labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
+      ),
+      controller: Content1UploadAlert.courseController,
+      onChanged: (value) {
+        course = value;
+      },
+    );
+  }
+
+  Widget _webinarDurationField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 40, left: 5),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(width: 1, color: Colors.grey)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+        ),
+        labelText: 'Minutes',
+        labelStyle: TextStyle(color: Colors.black, fontSize: 15),
+      ),
+      controller: webinarDurationController,
+      onChanged: (value) {
+        webinarDuration = value;
       },
     );
   }
@@ -881,8 +1155,8 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 550,
-      width: 460,
+      height: 800,
+      width: 550,
       color: Colors.white,
       child: Stack(
         children: [
@@ -891,7 +1165,7 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
               Container(
                 color: Colors.blue,
                 height: 100,
-                width: 500,
+                width: double.infinity,
                 child: Center(
                   child: Text(
                     'Content 1',
@@ -899,7 +1173,6 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -919,14 +1192,14 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
                           Icon(
                             Icons.upload_outlined,
                             color: Colors.blue,
+                            size: 15,
                           ),
-                          SizedBox(width: 5),
                           Padding(
                             padding: EdgeInsets.all(10),
                             child: Text(
                               'Upload',
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 12,
                                 color: Color(0xff0090E9),
                               ),
                             ),
@@ -982,81 +1255,141 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
                   ),
                 ],
               ),
-              SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              SizedBox(height: 30),
+              Column(
                 children: [
-                  Container(
-                    height: 70,
-                    width: 330,
-                    child: _heading1(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        height: 70,
+                        width: 400,
+                        child: _trainerNameField(),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        height: 70,
+                        width: 400,
+                        child: _superTopicField(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        height: 70,
+                        width: 400,
+                        child: _mainTitleField(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        height: 70,
+                        width: 400,
+                        child: _mainSubtitleField(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        height: 70,
+                        width: 400,
+                        child: _courseField(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        height: 70,
+                        width: 400,
+                        child: _webinarDurationField(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  RaisedButton(
+                    color: Colors.blue,
+                    onPressed: () {
+                      print(
+                          '${Content1.paymentController.text} //////////////1308');
+                      _firestore
+                          .collection('Webinar')
+                          .doc(Content1.paymentController == null ||
+                                  Content1.paymentController.text.isEmpty
+                              ? 'free_webinar'
+                              : 'paid_webinar')
+                          .collection(Content1UploadAlert.courseController.text)
+                          .doc(Content1UploadAlert.courseController.text)
+                          .set({
+                        'trainer name': trainerName,
+                        'trainer image': mentorImage,
+                        'super title': superTopic,
+                        'main title': mainTitle,
+                        'main subtitle': mainSubtitle,
+                        'course': Content1UploadAlert.courseController.text,
+                        'webinar duration': webinarDuration,
+                        'payment': Content1.paymentController.text.isEmpty
+                            ? 'free'
+                            : Content1.paymentController.text,
+                      });
+                      heading1Controller.clear();
+                      heading2Controller.clear();
+                      heading3Controller.clear();
+                      Navigator.pop(context);
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        'Submit',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  )
                 ],
               ),
-              SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    height: 70,
-                    width: 330,
-                    child: _heading2(),
-                  ),
-                ],
-              ),
-              SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    height: 70,
-                    width: 330,
-                    child: _heading3(),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              RaisedButton(
-                color: Colors.blue,
-                onPressed: () {
-                  _firestore.collection('Webinar').add({
-                    'heading1': heading1,
-                    'heading2': heading2,
-                    'heading3': heading3,
-                  });
-                  heading1Controller.clear();
-                  heading2Controller.clear();
-                  heading3Controller.clear();
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              )
             ],
           ),
           Positioned(
             left: 15,
             top: 60,
             child: CircleAvatar(
+              backgroundImage: NetworkImage('$mentorImage'),
               backgroundColor: Colors.grey[200],
               maxRadius: 45,
             ),
           ),
           Positioned(
             width: 35,
-            top: 30,
+            top: 25,
             right: 13,
             child: RaisedButton(
               elevation: 0,
-              hoverColor: Colors.white,
+              hoverColor: Colors.red,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
@@ -1066,12 +1399,12 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
                 Navigator.pop(context);
               },
               child: Icon(
-                Icons.cancel_outlined,
-                color: Colors.black,
+                Icons.cancel,
+                color: Colors.white,
                 size: 35,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -1086,11 +1419,11 @@ class Content2UploadAlert extends StatefulWidget {
 }
 
 class _Content2UploadAlertState extends State<Content2UploadAlert> {
-  String heading1;
-  String heading2;
+  String title;
+  String subtitle;
 
-  final heading1Controller = TextEditingController();
-  final heading2Controller = TextEditingController();
+  final titleController = TextEditingController();
+  final subtitleController = TextEditingController();
 
   Widget _heading1() {
     return TextFormField(
@@ -1120,8 +1453,9 @@ class _Content2UploadAlertState extends State<Content2UploadAlert> {
           fontSize: 15,
         ),
       ),
+      controller: titleController,
       onChanged: (value) {
-        heading1 = value;
+        title = value;
       },
     );
   }
@@ -1154,9 +1488,9 @@ class _Content2UploadAlertState extends State<Content2UploadAlert> {
           fontSize: 15,
         ),
       ),
-      controller: heading2Controller,
+      controller: subtitleController,
       onChanged: (value) {
-        heading2 = value;
+        subtitle = value;
       },
     );
   }
@@ -1183,46 +1517,6 @@ class _Content2UploadAlertState extends State<Content2UploadAlert> {
                 ),
               ),
               SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 10, right: 20),
-                    child: RaisedButton(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Color(0xff0090E9),
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.upload_outlined,
-                            color: Colors.blue,
-                          ),
-                          SizedBox(width: 5),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              'Upload',
-                              style: TextStyle(
-                                fontSize: 17,
-                                color: Color(0xff0090E9),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      textColor: Colors.white,
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 25),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -1255,7 +1549,27 @@ class _Content2UploadAlertState extends State<Content2UploadAlert> {
               SizedBox(height: 25),
               RaisedButton(
                 color: Colors.blue,
-                onPressed: () {},
+                onPressed: () {
+                  _firestore
+                      .collection('Webinar')
+                      .doc(Content1.paymentController == null ||
+                              Content1.paymentController.text.isEmpty
+                          ? 'free_webinar'
+                          : 'paid_webinar')
+                      .collection(Content1UploadAlert.courseController.text)
+                      .doc(Content1UploadAlert.courseController.text)
+                      .update({
+                    'topic title': FieldValue.arrayUnion([title]),
+                    'topic subtitle': FieldValue.arrayUnion([subtitle]),
+                    'course': Content1UploadAlert.courseController.text,
+                    'payment': Content1.paymentController.text.isEmpty
+                        ? 'free'
+                        : Content1.paymentController.text,
+                  });
+                  titleController.clear();
+                  subtitleController.clear();
+                  Navigator.pop(context);
+                },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)),
                 child: Padding(
@@ -1267,14 +1581,6 @@ class _Content2UploadAlertState extends State<Content2UploadAlert> {
                 ),
               )
             ],
-          ),
-          Positioned(
-            left: 15,
-            top: 60,
-            child: CircleAvatar(
-              backgroundColor: Colors.grey[200],
-              maxRadius: 45,
-            ),
           ),
           Positioned(
             width: 35,
@@ -1313,6 +1619,9 @@ class Content3UploadAlert extends StatefulWidget {
 
 class _Content3UploadAlertState extends State<Content3UploadAlert> {
   String aboutMentor;
+  var mentorImage;
+  String filename;
+  Uint8List uploadfile;
   TextEditingController aboutMentorController = TextEditingController();
 
   Widget _buildAboutMentor() {
@@ -1421,7 +1730,50 @@ class _Content3UploadAlertState extends State<Content3UploadAlert> {
                           ],
                         ),
                         textColor: Colors.white,
-                        onPressed: () {},
+                        onPressed: () async {
+                          FilePickerResult result =
+                              await FilePicker.platform.pickFiles();
+                          if (result != null) {
+                            uploadfile = result.files.single.bytes;
+                            setState(() {
+                              filename = basename(result.files.single.name);
+                            });
+                            print(filename);
+                          } else {
+                            print('pick image');
+                          }
+                          ///////
+                          Future uploadPic(BuildContext context) async {
+                            Reference firebaseStorageRef = FirebaseStorage
+                                .instance
+                                .ref()
+                                .child("Mentor")
+                                .child(filename);
+                            UploadTask uploadTask =
+                                firebaseStorageRef.putData(uploadfile);
+                            TaskSnapshot taskSnapshot =
+                                await uploadTask.whenComplete(() {
+                              setState(() {
+                                print("Profile Picture uploaded");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text('Staff Picture Uploaded')));
+                                uploadTask.snapshot.ref
+                                    .getDownloadURL()
+                                    .then((value) {
+                                  setState(() {
+                                    mentorImage = value;
+                                  });
+                                  print({mentorImage});
+                                });
+                              });
+                            });
+                          }
+
+                          print('$mentorImage');
+                          uploadPic(context);
+                        },
                       ),
                     ),
                   ],
@@ -1436,7 +1788,28 @@ class _Content3UploadAlertState extends State<Content3UploadAlert> {
               SizedBox(height: 20),
               RaisedButton(
                 color: Colors.blue,
-                onPressed: () {},
+                onPressed: () {
+                  _firestore
+                      .collection('Webinar')
+                      .doc(Content1.paymentController == null ||
+                              Content1.paymentController.text.isEmpty
+                          ? 'free_webinar'
+                          : 'paid_webinar')
+                      .collection(Content1UploadAlert.courseController.text)
+                      .doc(Content1UploadAlert.courseController.text)
+                      .update({
+                    'mentor image': mentorImage,
+                    'about mentor': aboutMentor,
+                    'course': Content1UploadAlert.courseController.text,
+                    'payment': Content1.paymentController.text.isEmpty
+                        ? 'free'
+                        : Content1.paymentController.text,
+                  });
+                  aboutMentorController.clear();
+                  Content1.paymentController.clear();
+                  Content1UploadAlert.courseController.clear();
+                  Navigator.pop(context);
+                },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8)),
                 child: Padding(
@@ -1453,6 +1826,7 @@ class _Content3UploadAlertState extends State<Content3UploadAlert> {
             left: 15,
             top: 60,
             child: CircleAvatar(
+              backgroundImage: NetworkImage("$mentorImage"),
               backgroundColor: Colors.grey[200],
               maxRadius: 45,
             ),
@@ -1712,10 +2086,6 @@ class _Content1EditAlertState extends State<Content1EditAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Text(
-                  //   'Heading 1',
-                  //   style: TextStyle(fontSize: 18),
-                  // ),
                   Container(
                     height: 70,
                     width: 330,
@@ -1727,10 +2097,6 @@ class _Content1EditAlertState extends State<Content1EditAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Text(
-                  //   'Heading 2',
-                  //   style: TextStyle(fontSize: 18),
-                  // ),
                   Container(
                     height: 70,
                     width: 330,
@@ -1742,10 +2108,6 @@ class _Content1EditAlertState extends State<Content1EditAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Text(
-                  //   'Heading 3',
-                  //   style: TextStyle(fontSize: 18),
-                  // ),
                   Container(
                     height: 70,
                     width: 330,
@@ -2222,6 +2584,7 @@ Future<void> displayDialog({name, context}) async {
     barrierDismissible: true, // user must tap button!
     builder: (BuildContext context) {
       return Container(
+        color: Colors.black54,
         child: AlertDialog(
           // buttonPadding: EdgeInsets.zero,
           // insetPadding: EdgeInsets.zero,
@@ -2241,15 +2604,15 @@ Future<void> displayDialog({name, context}) async {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-class Videos extends StatefulWidget {
+class MentorVideos extends StatefulWidget {
   static String filename;
   static var getLink;
   String imageLink;
   @override
-  _VideosState createState() => _VideosState();
+  _MentorVideosState createState() => _MentorVideosState();
 }
 
-class _VideosState extends State<Videos> {
+class _MentorVideosState extends State<MentorVideos> {
   Uint8List uploadfile;
   bool isComplete = false, isOnline = false, isOffline = false;
 
