@@ -735,10 +735,10 @@ class _AddCourseState extends State<AddCourse> {
                               .collection("course")
                               .doc(trainerID)
                               .collection('syllabus')
-                              .doc(
-                                  "${syllabusList.docs.length} ${sectionvalue}")
+                              .doc("${syllabusList.docs.length + 1}")
                               .set({
                             "section": sectionvalue,
+                            "id": syllabusList.docs.length + 1,
                             "chapter": FieldValue.arrayUnion(subject),
                             "flag": false
                           });

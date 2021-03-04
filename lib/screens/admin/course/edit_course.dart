@@ -61,7 +61,9 @@ class _EditCourseState extends State<EditCourse> {
   TextEditingController courseName;
   TextEditingController desc;
   bool isOnline = false;
+
   bool isOffline = false;
+  String syllabusCount;
   String check;
   @override
   void initState() {
@@ -81,6 +83,28 @@ class _EditCourseState extends State<EditCourse> {
     }
 
     //syllabus();
+    countForSyllabus();
+  }
+
+  List<int> syllabusSort = [];
+
+  void countForSyllabus() async {
+    print("++++++++++++++++++++++++");
+    print(widget.batchid);
+    await for (var snapshot in _firestore
+        .collection('course')
+        .doc(widget.batchid)
+        .collection('syllabus')
+        .snapshots(includeMetadataChanges: true)) {
+      for (var message in snapshot.docs) {
+        //print(message.documentID);
+        syllabusCount = message.documentID;
+        syllabusSort.add(int.parse(syllabusCount));
+      }
+      syllabusSort.sort();
+      print(syllabusSort.length);
+      print("+++++++++++++++++fffffffffff+++++++");
+    }
   }
 
   @override
@@ -367,62 +391,66 @@ class _EditCourseState extends State<EditCourse> {
                             } else {
                               final messages = snapshot.data.docs;
                               String messageContent3;
-
                               List<SyllabusDb> syllabusDetails = [];
-
                               for (var message in messages) {
                                 List<Widget> chapterWidget = [];
-                                // if (message.data()['coursename'] == widget.course) {
-                                final messageContent2 =
-                                    message.data()['section'];
-                                //final messageContent3 = message.data()['chapter'];
-                                for (var i = 0;
-                                    i < message.data()["chapter"].length;
-                                    i++) {
-                                  messageContent3 =
-                                      message.data()["chapter"][i];
-                                  chapterWidget.add(
-                                    Container(
-                                      margin:
-                                          EdgeInsets.symmetric(vertical: 10.0),
-                                      child: TextField(
-                                        textInputAction: TextInputAction.next,
-                                        onEditingComplete: () =>
-                                            FocusScope.of(context).nextFocus(),
-                                        onChanged: (val) {
-                                          chaptervalue = val;
-                                          print(val);
-                                          print(subject);
-                                        },
-                                        controller: TextEditingController(
-                                            text: messageContent3),
-                                        decoration: courseIconDecor(
-                                            title: "Enter Chapter name",
-                                            icon: Icon(
-                                              FontAwesomeIcons.times,
-                                              color: Colors.red,
-                                            ),
-                                            onPress: () {
-                                              setState(() {
-                                                //chapter[key].removeAt(index);
-                                              });
-                                            },
-                                            context: context),
-                                      ),
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 40),
-                                    ),
-                                  );
-                                }
+                                final docid = message.id;
+                                for (var k = 0; k < syllabusSort.length; k++) {
+                                  if (k.toString() == docid) {
+                                    print("true");
+                                    final messageContent2 =
+                                        message.data()['section'];
 
-                                final syllabus = SyllabusDb(
-                                  section: messageContent2,
-                                  chapterWidget: chapterWidget,
-                                );
-                                syllabusDetails.add(syllabus);
-                                print("${chapterWidget}chapter");
-                                print(messages);
-                                // }
+                                    for (var i = 0;
+                                        i < message.data()["chapter"].length;
+                                        i++) {
+                                      messageContent3 =
+                                          message.data()["chapter"][i];
+                                      chapterWidget.add(
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 10.0),
+                                          child: TextField(
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            onEditingComplete: () =>
+                                                FocusScope.of(context)
+                                                    .nextFocus(),
+                                            onChanged: (val) {
+                                              chaptervalue = val;
+                                              print(val);
+                                              print(subject);
+                                            },
+                                            controller: TextEditingController(
+                                                text: messageContent3),
+                                            decoration: courseIconDecor(
+                                                title: "Enter Chapter name",
+                                                icon: Icon(
+                                                  FontAwesomeIcons.times,
+                                                  color: Colors.red,
+                                                ),
+                                                onPress: () {
+                                                  setState(() {
+                                                    //chapter[key].removeAt(index);
+                                                  });
+                                                },
+                                                context: context),
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 40),
+                                        ),
+                                      );
+                                    }
+
+                                    final syllabus = SyllabusDb(
+                                      section: messageContent2,
+                                      chapterWidget: chapterWidget,
+                                    );
+                                    syllabusDetails.add(syllabus);
+                                    print("${chapterWidget}chapter");
+                                    print(messages);
+                                  }
+                                }
                               }
 
                               return Column(
@@ -659,9 +687,9 @@ class _EditCourseState extends State<EditCourse> {
                               .collection("course")
                               .doc(widget.batchid)
                               .collection('syllabus')
-                              .doc(
-                                  "${syllabusList.docs.length} ${sectionvalue}")
+                              .doc("${syllabusList.docs.length + 1}")
                               .set({
+                            "id": syllabusList.docs.length + 1,
                             "section": sectionvalue,
                             "chapter": FieldValue.arrayUnion(subject),
                           });

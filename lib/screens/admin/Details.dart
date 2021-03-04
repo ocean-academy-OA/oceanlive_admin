@@ -128,8 +128,8 @@ class Details extends StatelessWidget {
 
     return
         //
-        BatchSchedule();
-    Expanded(
+        // BatchSchedule();
+        Expanded(
       flex: 6,
       child: Padding(
         padding: pagePadding,
@@ -2494,7 +2494,7 @@ class _TableWidgetState extends State<TableWidget> {
 
   Widget subjectDb() {
     var subject = StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('staff').snapshots(),
+      stream: _firestore.collection('Mentor').snapshots(),
       // ignore: missing_return
       builder: (context, snapshot) {
         if (!snapshot.hasData) {

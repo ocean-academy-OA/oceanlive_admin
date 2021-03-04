@@ -52,22 +52,9 @@ class _ViewCourseState extends State<ViewCourse> {
   Uint8List uploadfile;
   List key = [];
   var collection;
-  // void getMessage() async {
-  //   collection = await _firestore.collection('online').doc().get();
-  //   var collection2 = await _firestore
-  //       .collection('online')
-  //       .doc("python")
-  //       .collection("syllabus")
-  //       .get();
-  //   collection = collection.data();
-  //   print(collection);
-  //   for (var courses1 in collection.docs) {
-  //     print(courses1.data());
-  //   }
-  //   for (var courses in collection2.docs) {
-  //     print(courses.data());
-  //   }
-  // }
+  List<int> syllabus = [];
+
+  int index = 0;
 
   _launchURL() async {
     final url = widget.pdfLink;
@@ -80,6 +67,7 @@ class _ViewCourseState extends State<ViewCourse> {
 
   IconData iconData;
   bool isVisible = false;
+  String syllabusCount;
 
   _ViewCourseState();
 
@@ -148,6 +136,25 @@ class _ViewCourseState extends State<ViewCourse> {
     }
   }
 
+  void count() async {
+    print("++++++++++++++++++++++++");
+    print(widget.batchid);
+    await for (var snapshot in _firestore
+        .collection('course')
+        .doc(widget.batchid)
+        .collection('syllabus')
+        .snapshots(includeMetadataChanges: true)) {
+      for (var message in snapshot.docs) {
+        //print(message.documentID);
+        syllabusCount = message.documentID;
+        syllabus.add(int.parse(syllabusCount));
+      }
+      syllabus.sort();
+      print(syllabus.length);
+      print("+++++++++++++++++fffffffffff+++++++");
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -155,6 +162,7 @@ class _ViewCourseState extends State<ViewCourse> {
     chapterKey();
     courseId();
     offlineBatchId();
+    count();
 
     // getMessage();
     // var sample = _firestore.collection("online").get();
@@ -247,6 +255,7 @@ class _ViewCourseState extends State<ViewCourse> {
                                     // .doc(widget.course)
                                     .doc(widget.batchid)
                                     .collection('syllabus')
+                                    .orderBy("id")
                                     .snapshots(),
                                 // ignore: missing_return
                                 builder: (context, snapshot) {
@@ -258,48 +267,55 @@ class _ViewCourseState extends State<ViewCourse> {
 
                                     //List<String> subjects = [];
                                     String messageContent;
+                                    String messageTopic;
 
                                     for (var message in messages) {
                                       List<Widget> chapterWidget = [];
-                                      // if (message.data()['coursename'] == widget.course) {
                                       final messageSender =
                                           message.data()[widget.course];
                                       final messageImage =
                                           message.data()[widget.img];
                                       final messageCoursedescription =
                                           message.data()[widget.desc];
-                                      final messageTopic =
-                                          message.data()['section'];
-                                      for (var i = 0;
-                                          i < message.data()["chapter"].length;
-                                          i++) {
-                                        messageContent =
-                                            message.data()["chapter"][i];
-                                        chapterWidget.add(
-                                          Text(
-                                            "${messageContent}",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Color(0xff555454)),
-                                          ),
-                                        );
-                                        print(messageContent);
+                                      final docid = message.id;
+
+                                      for (var k = 0;
+                                          k < syllabus.length;
+                                          k++) {
+                                        if (k.toString() == docid) {
+                                          print("true");
+                                          messageTopic =
+                                              message.data()['section'];
+                                          for (var i = 0;
+                                              i <
+                                                  message
+                                                      .data()["chapter"]
+                                                      .length;
+                                              i++) {
+                                            messageContent =
+                                                message.data()["chapter"][i];
+                                            chapterWidget.add(
+                                              Text(
+                                                messageContent,
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Color(0xff555454)),
+                                              ),
+                                            );
+                                          }
+
+                                          final details = CourseDetails(
+                                            coursename: messageSender,
+                                            image: messageImage,
+                                            description:
+                                                messageCoursedescription,
+                                            topic: messageTopic,
+                                            chapterWidget: chapterWidget,
+                                          );
+
+                                          courseDetails.add(details);
+                                        }
                                       }
-
-                                      final details = CourseDetails(
-                                        coursename: messageSender,
-                                        image: messageImage,
-                                        description: messageCoursedescription,
-                                        topic: messageTopic,
-                                        chapterWidget: chapterWidget,
-                                      );
-
-                                      courseDetails.add(details);
-
-                                      print("test$messages");
-
-                                      // }
-
                                     }
 
                                     return Column(

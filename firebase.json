@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "hosting": "lastadmin",
     "public": "build/web",
     "ignore": [
       "firebase.json",

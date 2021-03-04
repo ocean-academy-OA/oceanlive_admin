@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:ocean_live/screens/admin/video.dart';
 import 'package:path/path.dart';
 import 'dart:typed_data';
@@ -29,6 +30,8 @@ class _WebinarState extends State<Webinar> {
   bool _content1 = true;
   bool _content2 = false;
   bool _content3 = false;
+
+  String dateTime;
 
   @override
   Widget build(BuildContext context) {
@@ -994,6 +997,9 @@ class _Dbcontent3State extends State<Dbcontent3> {
 ///< Content 1 Upload Alert >///
 
 class Content1UploadAlert extends StatefulWidget {
+  DateTime timestamp;
+  Content1UploadAlert({this.timestamp});
+
   static TextEditingController courseController = TextEditingController();
 
   @override
@@ -1018,6 +1024,53 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
   final heading3Controller = TextEditingController();
   final trainerNameController = TextEditingController();
   final webinarDurationController = TextEditingController();
+
+  num year;
+  num day;
+  num month;
+  var timestamp;
+
+  DateTime time;
+  DateTime selectedDate = DateTime.now();
+  TextEditingController _dateController = TextEditingController();
+
+  TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        initialDatePickerMode: DatePickerMode.day,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2025));
+
+    final TimeOfDay tpicked = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+    );
+
+    if (picked != null)
+      setState(() {
+        selectedDate = picked;
+        print(tpicked);
+
+        print(selectedDate.compareTo(DateTime.now()));
+        // timestamp = '$selectedDate $tpicked';
+        time = DateTime(selectedDate.year, selectedDate.month, selectedDate.day,
+            tpicked.hour, tpicked.minute);
+        print(DateTime);
+        print('=====================');
+        print(time);
+        print(time.runtimeType);
+        _dateController.text = DateFormat.yMd().format(selectedDate);
+      });
+    year = int.parse(DateFormat('y').format(selectedDate));
+    month = int.parse(DateFormat('MM').format(selectedDate));
+    day = int.parse(DateFormat('d').format(selectedDate));
+    print(year);
+    print(month);
+    print(day);
+  }
 
   //TextFields
   Widget _superTopicField() {
@@ -1176,6 +1229,46 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10, right: 20),
+                    child: RaisedButton(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Color(0xff0090E9),
+                          width: 3,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.date_range_outlined,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(width: 5),
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'Date and Time',
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Color(0xff0090E9),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      textColor: Colors.white,
+                      onPressed: () {
+                        // DateTimePicker();
+                        _selectDate(context);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30,
+                  ),
                   Padding(
                     padding: EdgeInsets.only(top: 10, right: 20),
                     child: RaisedButton(
@@ -1349,6 +1442,7 @@ class _Content1UploadAlertState extends State<Content1UploadAlert> {
                         'super title': superTopic,
                         'main title': mainTitle,
                         'main subtitle': mainSubtitle,
+                        'timestamp': time,
                         'course': Content1UploadAlert.courseController.text,
                         'webinar duration': webinarDuration,
                         'payment': Content1.paymentController.text.isEmpty

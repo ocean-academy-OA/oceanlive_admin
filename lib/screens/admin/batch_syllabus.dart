@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:ocean_live/models/routing.dart';
-import 'package:provider/provider.dart';
 
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -36,72 +34,74 @@ class _BatchSyllebusState extends State<BatchSyllebus> {
         flex: 6,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              StreamBuilder<QuerySnapshot>(
-                stream: _firestore
-                    .collection('course')
-                    .doc(widget.trinerID)
-                    .collection("syllabus")
-                    .snapshots(),
-                // ignore: missing_return
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Text("Loading.....");
-                  } else {
-                    final messages = snapshot.data.docs;
+          child: SingleChildScrollView(
+            child: Container(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                StreamBuilder<QuerySnapshot>(
+                  stream: _firestore
+                      .collection('course')
+                      .doc(widget.trinerID)
+                      .collection("syllabus")
+                      .snapshots(),
+                  // ignore: missing_return
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Text("Loading.....");
+                    } else {
+                      final messages = snapshot.data.docs;
 
-                    for (var message in messages) {
-                      final topics = message.data()['section'];
-                      final isCheckValue = message.data()['flag'];
-                      final dbTimeAndDate = message.data()['time'];
-                      boolContent[topics] = isCheckValue;
-                      timeAndDate.add(dbTimeAndDate);
+                      for (var message in messages) {
+                        final topics = message.data()['section'];
+                        final isCheckValue = message.data()['flag'];
+                        final dbTimeAndDate = message.data()['time'];
+                        boolContent[topics] = isCheckValue;
+                        timeAndDate.add(dbTimeAndDate);
+                      }
+                      return TopicWidget(
+                        content: boolContent,
+                        dateAndTime: timeAndDate,
+                      );
+                      // return Text("welcome");
                     }
-                    return TopicWidget(
-                      content: boolContent,
-                      dateAndTime: timeAndDate,
-                    );
-                    // return Text("welcome");
-                  }
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: FlatButton(
-                  minWidth: 300,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                  height: 50,
-                  color: Colors.blue,
-                  child: Text(
-                    'SCHEDULE',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        fontSize: 23),
-                  ),
-                  onPressed: () {
-                    print('${boolContent} checkListttttttttttttttttttttt');
-                    for (var scheduleUpdate in boolContent.entries) {
-                      bool done = scheduleUpdate.value;
-                      String doneTopic = scheduleUpdate.key;
-                      print(done);
-                      _firestore
-                          .collection('course')
-                          .doc(widget.trinerID)
-                          .collection("syllabus")
-                          .doc(doneTopic)
-                          .update({'flag': done});
-                    }
-                    _showDialog();
                   },
                 ),
-              ),
-            ],
-          )),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: FlatButton(
+                    minWidth: 300,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    height: 50,
+                    color: Colors.blue,
+                    child: Text(
+                      'SCHEDULE',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: 23),
+                    ),
+                    onPressed: () {
+                      print('${boolContent} checkListttttttttttttttttttttt');
+                      for (var scheduleUpdate in boolContent.entries) {
+                        bool done = scheduleUpdate.value;
+                        String doneTopic = scheduleUpdate.key;
+                        print(done);
+                        _firestore
+                            .collection('course')
+                            .doc(widget.trinerID)
+                            .collection("syllabus")
+                            .doc(doneTopic)
+                            .update({'flag': done});
+                      }
+                      _showDialog();
+                    },
+                  ),
+                ),
+              ],
+            )),
+          ),
         ));
   }
 

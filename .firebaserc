@@ -1,29 +1,13 @@
 {
   "projects": {
-    "default": "ocean-live-project-ea2e7",
-    "oceanadministration": "ocean-live-project-ea2e7",
-    "oceanadmin01": "ocean-live",
     "oa": "ocean-live-project-ea2e7",
-    "ocean": "ocean-live-project-ea2e7",
-    "of": "ocean-live",
-    "hori": "ocean-live-project-ea2e7",
-    "jj": "ocean-live"
+    "default": "ocean-live-project-ea2e7"
   },
   "targets": {
     "ocean-live-project-ea2e7": {
       "hosting": {
-        "lastadmin": [
-          "ocean-live-adminproject-ea2e7"
-        ]
-      }
-    },
-    "ocean-live": {
-      "hosting": {
-        "admin01": [
-          "adminversion01"
-        ],
-        "lastadmin": [
-          "ocean-live-adminproject-ea2e7"
+        "admin": [
+          "oceanadminhosting"
         ]
       }
     }

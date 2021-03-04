@@ -44,6 +44,18 @@ class _CourseState extends State<Course> {
     }
   }
 
+  // void syllabusId() async {
+  //   await for (var snapshot in _firestore
+  //       .collection('course').where("coursename",isEqualTo: )
+  //       .snapshots(includeMetadataChanges: true)) {
+  //     for (var message in snapshot.docs) {
+  //       print(message.documentID);
+  //       Course.studentid.add(message.documentID);
+  //       print("${Course.studentid}listlistlistttttttttttttttt");
+  //     }
+  //   }
+  // }
+
   Map menuColor = {"Online": true, "Offline": false};
   bool menu;
   Color color = Color(0xFF0091D2);
